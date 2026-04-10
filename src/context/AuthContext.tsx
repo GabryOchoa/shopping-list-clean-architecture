@@ -27,8 +27,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth state changes (login / logout)
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
         setSession(session);
+
+        // If user just logged in, ensure their profile exists in the database
+        if (session?.user) {
+          await supabase.from("profiles").upsert({
+            id: session.user.id,
+            email: session.user.email,
+          });
+        }
       },
     );
 

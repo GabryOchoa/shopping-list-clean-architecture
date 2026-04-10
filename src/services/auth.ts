@@ -28,14 +28,14 @@ export async function signInWithGoogle() {
 
   if (result.type === "success") {
     const url = new URL(result.url);
-    const accessToken = url.searchParams.get("access_token");
-    const refreshToken = url.searchParams.get("refresh_token");
 
-    if (accessToken && refreshToken) {
-      await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
+    // Extract the authorization code from the URL
+    const code = url.searchParams.get("code");
+    if (code) {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) {
+        throw error;
+      }
     }
   }
 }
