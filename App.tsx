@@ -1,10 +1,12 @@
 import "./global.css";
-import { Text, View } from "react-native";
+import React from "react";
+import { AuthProvider } from "./src/context/AuthContext";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-gray-900">
-      <Text className="text-white text-xl font-bold">Shopping List APP 🛒</Text>
-    </View>
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
   );
 }
