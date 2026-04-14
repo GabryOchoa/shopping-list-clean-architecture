@@ -5,11 +5,15 @@ import { View, ActivityIndicator } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import LoginScreen from "../screens/LoginScreen";
 import ListsScreen from "../screens/ListsScreen";
+import ListDetailScreen from "../screens/ListDetailScreen";
 
 export type RootStackParamList = {
   Login: undefined;
   Lists: undefined;
-  // ListDetail will be added in feature/item-crud
+  ListDetail: {
+    listId: string;
+    listName: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,7 +34,10 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator id="root-stack" screenOptions={{ headerShown: false }}>
         {user ? (
-          <Stack.Screen name="Lists" component={ListsScreen} />
+          <>
+            <Stack.Screen name="Lists" component={ListsScreen} />
+            <Stack.Screen name="ListDetail" component={ListDetailScreen} />
+          </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />
         )}
