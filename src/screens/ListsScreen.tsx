@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
 import {
   View,
   Text,
@@ -14,7 +16,9 @@ import ListCard from "../components/ListCard";
 import ListModal from "../components/ListModal";
 import { List } from "../types";
 
-export default function ListsScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, "Lists">;
+
+export default function ListsScreen({ navigation }: Props) {
   const { lists, loading, error, refresh, addList, editList, removeList } =
     useLists();
   const { user } = useAuth();
@@ -81,7 +85,12 @@ export default function ListsScreen() {
         renderItem={({ item }) => (
           <ListCard
             list={item}
-            onPress={() => {}} // will navigate to items in next branch
+            onPress={(list) =>
+              navigation.navigate("ListDetail", {
+                listId: list.id,
+                listName: list.name,
+              })
+            }
             onEdit={handleEdit}
             onDelete={removeList}
           />
