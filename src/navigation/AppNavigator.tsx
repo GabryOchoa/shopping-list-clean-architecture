@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import LoginScreen from "../screens/LoginScreen";
 import ListsScreen from "../screens/ListsScreen";
 import ListDetailScreen from "../screens/ListDetailScreen";
+import ShareListScreen from "../screens/ShareListScreen";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -13,6 +14,12 @@ export type RootStackParamList = {
   ListDetail: {
     listId: string;
     listName: string;
+    ownerId: string;
+  };
+  ShareList: {
+    listId: string;
+    listName: string;
+    ownerId: string;
   };
 };
 
@@ -37,6 +44,7 @@ export default function AppNavigator() {
           <>
             <Stack.Screen name="Lists" component={ListsScreen} />
             <Stack.Screen name="ListDetail" component={ListDetailScreen} />
+            <Stack.Screen name="ShareList" component={ShareListScreen} />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />
