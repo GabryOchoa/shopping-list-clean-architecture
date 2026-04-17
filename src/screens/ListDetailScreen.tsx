@@ -17,7 +17,7 @@ import { Item } from "../types";
 type Props = NativeStackScreenProps<RootStackParamList, "ListDetail">;
 
 export default function ListDetailScreen({ route, navigation }: Props) {
-  const { listId, listName } = route.params;
+  const { listId, listName, ownerId } = route.params;
   const {
     items,
     loading,
@@ -73,6 +73,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
           >
             <Text className="text-gray-600 text-sm">← Back</Text>
           </TouchableOpacity>
+
           <View className="flex-1">
             <Text
               className="text-2xl font-bold text-gray-800"
@@ -81,6 +82,16 @@ export default function ListDetailScreen({ route, navigation }: Props) {
               {listName}
             </Text>
           </View>
+
+          {/* Share button */}
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ShareList", { listId, listName, ownerId })
+            }
+            className="bg-gray-100 rounded-xl px-3 py-2"
+          >
+            <Text className="text-gray-600 text-sm">Share</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Progress bar */}
