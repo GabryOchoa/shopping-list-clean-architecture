@@ -89,6 +89,7 @@ export default function ListsScreen({ navigation }: Props) {
               navigation.navigate("ListDetail", {
                 listId: list.id,
                 listName: list.name,
+                ownerId: list.owner_id,
               })
             }
             onEdit={handleEdit}
