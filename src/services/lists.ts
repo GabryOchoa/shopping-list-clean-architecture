@@ -1,15 +1,51 @@
 import { supabase } from "./supabase";
 import { List } from "../types";
 
-// Fetch all lists from the database, ordered by creation date (newest first)
+// Fetch lists owned by the current user, ordered by creation date (newest first)
 export async function fetchLists(): Promise<List[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("User not authenticated");
+
   const { data, error } = await supabase
     .from("lists")
     .select("*")
+    .eq("owner_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
   return data as List[];
+}
+
+export type SharedListEntry = {
+  list: List;
+  role: "viewer" | "editor";
+};
+
+// Fetch lists shared with the current user via list_members
+export async function fetchSharedLists(): Promise<SharedListEntry[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("User not authenticated");
+
+  const { data, error } = await supabase
+    .from("list_members")
+    .select("role, list:lists(*)")
+    .eq("user_id", user.id)
+    .order("joined_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+
+  return (data as unknown as { role: "viewer" | "editor"; list: List }[]).map(
+    (entry) => ({
+      list: entry.list,
+      role: entry.role,
+    }),
+  );
 }
 
 // Create a new list with the given name and optional description, associating it with the authenticated user
