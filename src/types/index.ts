@@ -1,3 +1,5 @@
+export type ListRole = "owner" | "editor" | "viewer";
+
 export type Profile = {
   id: string;
   email: string;
