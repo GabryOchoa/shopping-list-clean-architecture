@@ -1,15 +1,24 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import { Item } from "../types";
+import { Item, ListRole } from "../types";
 
 type Props = {
   item: Item;
+  role: ListRole;
   onToggle: (id: string, isChecked: boolean) => void;
   onEdit: (item: Item) => void;
   onDelete: (id: string) => void;
 };
 
-export default function ItemRow({ item, onToggle, onEdit, onDelete }: Props) {
+export default function ItemRow({
+  item,
+  role,
+  onToggle,
+  onEdit,
+  onDelete,
+}: Props) {
+  const canMutate = role === "owner" || role === "editor";
+
   function handleDelete() {
     Alert.alert("Delete item", `Remove "${item.name}" from this list?`, [
       { text: "Cancel", style: "cancel" },
@@ -53,22 +62,24 @@ export default function ItemRow({ item, onToggle, onEdit, onDelete }: Props) {
         )}
       </View>
 
-      {/* Actions */}
-      <View className="flex-row gap-2">
-        <TouchableOpacity
-          onPress={() => onEdit(item)}
-          className="bg-gray-100 rounded-xl px-3 py-1.5"
-        >
-          <Text className="text-sm text-gray-600">Edit</Text>
-        </TouchableOpacity>
+      {/* Actions — only for owner or editor */}
+      {canMutate && (
+        <View className="flex-row gap-2">
+          <TouchableOpacity
+            onPress={() => onEdit(item)}
+            className="bg-gray-100 rounded-xl px-3 py-1.5"
+          >
+            <Text className="text-sm text-gray-600">Edit</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={handleDelete}
-          className="bg-red-50 rounded-xl px-3 py-1.5"
-        >
-          <Text className="text-sm text-red-500">Delete</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={handleDelete}
+            className="bg-red-50 rounded-xl px-3 py-1.5"
+          >
+            <Text className="text-sm text-red-500">Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
