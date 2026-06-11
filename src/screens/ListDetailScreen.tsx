@@ -10,6 +10,7 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { useItems } from "../hooks/useItems";
+import { useListRole } from "../hooks/useListRole";
 import ItemRow from "../components/ItemRow";
 import ItemModal from "../components/ItemModal";
 import { Item } from "../types";
@@ -29,8 +30,13 @@ export default function ListDetailScreen({ route, navigation }: Props) {
     removeItem,
   } = useItems(listId);
 
+  const { role, loading: roleLoading } = useListRole(listId, ownerId);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
+
+  const canMutateItems = role === "owner" || role === "editor";
+  const isOwner = role === "owner";
 
   function handleEdit(item: Item) {
     setEditingItem(item);
@@ -81,17 +87,28 @@ export default function ListDetailScreen({ route, navigation }: Props) {
             >
               {listName}
             </Text>
+            {!roleLoading && role && role !== "owner" && (
+              <View className="flex-row items-center mt-1">
+                <View className="bg-indigo-100 rounded-full px-2 py-0.5">
+                  <Text className="text-xs text-indigo-600 capitalize">
+                    {role}
+                  </Text>
+                </View>
+              </View>
+            )}
           </View>
 
-          {/* Share button */}
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ShareList", { listId, listName, ownerId })
-            }
-            className="bg-gray-100 rounded-xl px-3 py-2"
-          >
-            <Text className="text-gray-600 text-sm">Share</Text>
-          </TouchableOpacity>
+          {/* Share button — owner only */}
+          {isOwner && (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ShareList", { listId, listName, ownerId })
+              }
+              className="bg-gray-100 rounded-xl px-3 py-2"
+            >
+              <Text className="text-gray-600 text-sm">Share</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Progress bar */}
@@ -132,6 +149,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         renderItem={({ item }) => (
           <ItemRow
             item={item}
+            role={role ?? "viewer"}
             onToggle={checkItem}
             onEdit={handleEdit}
             onDelete={removeItem}
@@ -140,9 +158,11 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         ListEmptyComponent={
           <View className="items-center justify-center py-20">
             <Text className="text-gray-400 text-base">No items yet</Text>
-            <Text className="text-gray-400 text-sm mt-1">
-              Tap + to add your first item
-            </Text>
+            {canMutateItems && (
+              <Text className="text-gray-400 text-sm mt-1">
+                Tap + to add your first item
+              </Text>
+            )}
           </View>
         }
         refreshControl={
@@ -150,13 +170,15 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         }
       />
 
-      {/* FAB */}
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        className="absolute bottom-8 right-6 bg-indigo-600 w-14 h-14 rounded-full items-center justify-center shadow-lg"
-      >
-        <Text className="text-white text-3xl leading-none">+</Text>
-      </TouchableOpacity>
+      {/* FAB — owner or editor only */}
+      {canMutateItems && (
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          className="absolute bottom-8 right-6 bg-indigo-600 w-14 h-14 rounded-full items-center justify-center shadow-lg"
+        >
+          <Text className="text-white text-3xl leading-none">+</Text>
+        </TouchableOpacity>
+      )}
 
       <ItemModal
         visible={modalVisible}

@@ -19,8 +19,16 @@ import { List } from "../types";
 type Props = NativeStackScreenProps<RootStackParamList, "Lists">;
 
 export default function ListsScreen({ navigation }: Props) {
-  const { lists, loading, error, refresh, addList, editList, removeList } =
-    useLists();
+  const {
+    lists,
+    sharedEntries,
+    loading,
+    error,
+    refresh,
+    addList,
+    editList,
+    removeList,
+  } = useLists();
   const { user } = useAuth();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,7 +52,7 @@ export default function ListsScreen({ navigation }: Props) {
     }
   }
 
-  if (loading && lists.length === 0) {
+  if (loading && lists.length === 0 && sharedEntries.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">
         <ActivityIndicator size="large" color="#4F46E5" />
@@ -77,33 +85,72 @@ export default function ListsScreen({ navigation }: Props) {
         </View>
       )}
 
-      {/* List */}
       <FlatList
         data={lists}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16 }}
-        renderItem={({ item }) => (
-          <ListCard
-            list={item}
-            onPress={(list) =>
-              navigation.navigate("ListDetail", {
-                listId: list.id,
-                listName: list.name,
-                ownerId: list.owner_id,
-              })
-            }
-            onEdit={handleEdit}
-            onDelete={removeList}
-          />
-        )}
-        ListEmptyComponent={
-          <View className="items-center justify-center py-20">
-            <Text className="text-gray-400 text-base">No lists yet</Text>
-            <Text className="text-gray-400 text-sm mt-1">
-              Tap + to create your first one
+        ListHeaderComponent={
+          <>
+            {/* My Lists section */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+              My Lists
             </Text>
-          </View>
+
+            {lists.length === 0 && (
+              <View className="items-center justify-center py-10 mb-6">
+                <Text className="text-gray-400 text-base">No lists yet</Text>
+                <Text className="text-gray-400 text-sm mt-1">
+                  Tap + to create your first one
+                </Text>
+              </View>
+            )}
+
+            {lists.map((item) => (
+              <ListCard
+                key={item.id}
+                list={item}
+                role="owner"
+                onPress={(list) =>
+                  navigation.navigate("ListDetail", {
+                    listId: list.id,
+                    listName: list.name,
+                    ownerId: list.owner_id,
+                  })
+                }
+                onEdit={handleEdit}
+                onDelete={removeList}
+              />
+            ))}
+
+            {/* Shared with me section */}
+            {sharedEntries.length > 0 && (
+              <>
+                <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">
+                  Shared with me
+                </Text>
+
+                {sharedEntries.map((entry) => (
+                  <ListCard
+                    key={entry.list.id}
+                    list={entry.list}
+                    role={entry.role}
+                    onPress={(list) =>
+                      navigation.navigate("ListDetail", {
+                        listId: list.id,
+                        listName: list.name,
+                        ownerId: list.owner_id,
+                      })
+                    }
+                    onEdit={handleEdit}
+                    onDelete={removeList}
+                  />
+                ))}
+              </>
+            )}
+          </>
         }
+        renderItem={() => null}
+        ListEmptyComponent={null}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refresh} />
         }
