@@ -71,7 +71,7 @@ export default function ItemModal({
   }
 
   function decrement() {
-    setQuantity((prev) => String(Math.max(parseInt(prev || "2") - 1, 1)));
+    setQuantity((prev) => String(Math.max(parseInt(prev || "1") - 1, 1)));
   }
 
   const isEditing = !!editingItem;
