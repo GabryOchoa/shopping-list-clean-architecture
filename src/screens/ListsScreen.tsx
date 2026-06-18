@@ -141,8 +141,6 @@ export default function ListsScreen({ navigation }: Props) {
                         ownerId: list.owner_id,
                       })
                     }
-                    onEdit={handleEdit}
-                    onDelete={removeList}
                   />
                 ))}
               </>
