@@ -8,8 +8,6 @@ export async function signInWithGoogle() {
   // Deep link real for dev client
   const redirectUrl = Linking.createURL("auth/callback");
 
-  console.log("Redirect URL:", redirectUrl);
-
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -23,8 +21,6 @@ export async function signInWithGoogle() {
   }
 
   const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-
-  console.log("Auth session result:", result);
 
   if (result.type === "success") {
     const url = new URL(result.url);

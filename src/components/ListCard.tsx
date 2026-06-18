@@ -6,8 +6,8 @@ type Props = {
   list: List;
   role: ListRole;
   onPress: (list: List) => void;
-  onEdit: (list: List) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (list: List) => void;
+  onDelete?: (id: string) => void;
 };
 
 export default function ListCard({
@@ -28,7 +28,7 @@ export default function ListCard({
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => onDelete(list.id),
+          onPress: () => onDelete?.(list.id),
         },
       ],
     );
@@ -66,7 +66,7 @@ export default function ListCard({
         {isOwner && (
           <View className="flex-row gap-2">
             <TouchableOpacity
-              onPress={() => onEdit(list)}
+              onPress={() => onEdit?.(list)}
               className="bg-gray-100 rounded-xl px-3 py-2"
             >
               <Text className="text-sm text-gray-600">Edit</Text>

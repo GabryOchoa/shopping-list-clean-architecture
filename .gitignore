@@ -43,3 +43,9 @@ yarn-error.*
 
 # OpenCode  
 agents.md
+
+# local files
+TODO.md
+/src/db
+.agents/
+skills-lock.json

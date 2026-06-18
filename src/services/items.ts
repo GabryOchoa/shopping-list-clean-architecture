@@ -8,7 +8,7 @@ export async function fetchItems(listId: string): Promise<Item[]> {
     .eq("list_id", listId)
     .order("created_at", { ascending: true });
 
-  if (error) throw Error(error.message);
+  if (error) throw new Error(error.message);
   return data as Item[];
 }
 
