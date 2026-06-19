@@ -32,10 +32,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If user just logged in, ensure their profile exists in the database
         if (session?.user) {
-          await supabase.from("profiles").upsert({
-            id: session.user.id,
-            email: session.user.email,
-          });
+          try {
+            await supabase.from("profiles").upsert({
+              id: session.user.id,
+              email: session.user.email,
+            });
+          } catch {
+            // Profile upsert is best-effort; don't block auth flow
+          }
         }
       },
     );
