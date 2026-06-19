@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useAuthActions } from "../hooks/useAuthActions";
+import React from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useAuthActions } from '../hooks/useAuthActions';
 
 export default function LoginScreen() {
   const { loading, error, handleSignIn } = useAuthActions();

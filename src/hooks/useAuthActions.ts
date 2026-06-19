@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { signInWithGoogle, signOut } from "../services/auth";
+import { useState, useCallback } from 'react';
+import { signInWithGoogle, signOut } from '../services/auth';
 
 type UseAuthActionsReturn = {
   loading: boolean;
@@ -18,8 +18,8 @@ export function useAuthActions(): UseAuthActionsReturn {
       setError(null);
       await signInWithGoogle();
     } catch (e: any) {
-      setError("Sign-in failed. Please try again.");
-      console.error("Google Sign-In Error:", e);
+      setError('Sign-in failed. Please try again.');
+      console.error('Google Sign-In Error:', e);
     } finally {
       setLoading(false);
     }
@@ -31,8 +31,8 @@ export function useAuthActions(): UseAuthActionsReturn {
       setError(null);
       await signOut();
     } catch (e: any) {
-      setError("Sign-out failed. Please try again.");
-      console.error("Sign-Out Error:", e);
+      setError('Sign-out failed. Please try again.');
+      console.error('Sign-Out Error:', e);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,16 +6,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-} from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import { useItems } from "../hooks/useItems";
-import { useListRole } from "../hooks/useListRole";
-import ItemRow from "../components/ItemRow";
-import ItemModal from "../components/ItemModal";
-import { Item } from "../types";
+} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { useItems } from '../hooks/useItems';
+import { useListRole } from '../hooks/useListRole';
+import ItemRow from '../components/ItemRow';
+import ItemModal from '../components/ItemModal';
+import { Item } from '../types';
 
-type Props = NativeStackScreenProps<RootStackParamList, "ListDetail">;
+type Props = NativeStackScreenProps<RootStackParamList, 'ListDetail'>;
 
 export default function ListDetailScreen({ route, navigation }: Props) {
   const { listId, listName, ownerId } = route.params;
@@ -35,8 +35,8 @@ export default function ListDetailScreen({ route, navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
 
-  const canMutateItems = role === "owner" || role === "editor";
-  const isOwner = role === "owner";
+  const canMutateItems = role === 'owner' || role === 'editor';
+  const isOwner = role === 'owner';
 
   function handleEdit(item: Item) {
     setEditingItem(item);
@@ -87,7 +87,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
             >
               {listName}
             </Text>
-            {!roleLoading && role && role !== "owner" && (
+            {!roleLoading && role && role !== 'owner' && (
               <View className="flex-row items-center mt-1">
                 <View className="bg-indigo-100 rounded-full px-2 py-0.5">
                   <Text className="text-xs text-indigo-600 capitalize">
@@ -102,7 +102,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
           {isOwner && (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("ShareList", { listId, listName, ownerId })
+                navigation.navigate('ShareList', { listId, listName, ownerId })
               }
               className="bg-gray-100 rounded-xl px-3 py-2"
             >
@@ -149,7 +149,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         renderItem={({ item }) => (
           <ItemRow
             item={item}
-            role={role ?? "viewer"}
+            role={role ?? 'viewer'}
             onToggle={checkItem}
             onEdit={handleEdit}
             onDelete={removeItem}

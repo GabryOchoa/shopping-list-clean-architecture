@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-} from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import { useShareList } from "../hooks/useShareList";
-import { useAuth } from "../context/AuthContext";
-import MemberRow from "../components/MemberRow";
-import InviteModal from "../components/InviteModal";
+} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { useShareList } from '../hooks/useShareList';
+import { useAuth } from '../context/AuthContext';
+import MemberRow from '../components/MemberRow';
+import InviteModal from '../components/InviteModal';
 
-type Props = NativeStackScreenProps<RootStackParamList, "ShareList">;
+type Props = NativeStackScreenProps<RootStackParamList, 'ShareList'>;
 
 export default function ShareListScreen({ route, navigation }: Props) {
   const { listId, listName, ownerId } = route.params;
@@ -67,7 +67,7 @@ export default function ShareListScreen({ route, navigation }: Props) {
       <View className="px-6 py-3 bg-indigo-50 border-b border-indigo-100">
         <Text className="text-xs text-indigo-600">
           <Text className="font-semibold">Viewer</Text> — can see items only
-          {"   "}
+          {'   '}
           <Text className="font-semibold">Editor</Text> — can add, edit and
           check off items
         </Text>
@@ -92,7 +92,7 @@ export default function ShareListScreen({ route, navigation }: Props) {
           contentContainerStyle={{ padding: 16 }}
           ListHeaderComponent={
             <Text className="text-xs text-gray-400 uppercase tracking-wide mb-3 px-1">
-              {members.length} {members.length === 1 ? "member" : "members"}
+              {members.length} {members.length === 1 ? 'member' : 'members'}
             </Text>
           }
           renderItem={({ item }) => (

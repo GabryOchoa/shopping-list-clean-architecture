@@ -1,12 +1,12 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, ActivityIndicator } from "react-native";
-import { useAuth } from "../context/AuthContext";
-import LoginScreen from "../screens/LoginScreen";
-import ListsScreen from "../screens/ListsScreen";
-import ListDetailScreen from "../screens/ListDetailScreen";
-import ShareListScreen from "../screens/ShareListScreen";
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, ActivityIndicator } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import LoginScreen from '../screens/LoginScreen';
+import ListsScreen from '../screens/ListsScreen';
+import ListDetailScreen from '../screens/ListDetailScreen';
+import ShareListScreen from '../screens/ShareListScreen';
 
 export type RootStackParamList = {
   Login: undefined;

@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
-import { List, ListRole } from "../types";
+import React from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { List, ListRole } from '../types';
 
 type Props = {
   list: List;
@@ -17,17 +17,17 @@ export default function ListCard({
   onEdit,
   onDelete,
 }: Props) {
-  const isOwner = role === "owner";
+  const isOwner = role === 'owner';
 
   function handleDelete() {
     Alert.alert(
-      "Delete List",
+      'Delete List',
       `Are you sure you want to delete "${list.name}"? This action cannot be undone.`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Delete",
-          style: "destructive",
+          text: 'Delete',
+          style: 'destructive',
           onPress: () => onDelete?.(list.id),
         },
       ],

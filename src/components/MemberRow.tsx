@@ -1,12 +1,12 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
-import { MemberWithProfile } from "../services/sharing";
-import { useAuth } from "../context/AuthContext";
+import React from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { MemberWithProfile } from '../services/sharing';
+import { useAuth } from '../context/AuthContext';
 
 type Props = {
   member: MemberWithProfile;
   isOwner: boolean; // true if the current user owns the list
-  onChangeRole: (memberId: string, role: "viewer" | "editor") => void;
+  onChangeRole: (memberId: string, role: 'viewer' | 'editor') => void;
   onRemove: (memberId: string) => void;
 };
 
@@ -20,23 +20,23 @@ export default function MemberRow({
   const isCurrentUser = member.profile.id === user?.id;
 
   function handleRemove() {
-    const label = isCurrentUser ? "Leave list" : "Remove member";
+    const label = isCurrentUser ? 'Leave list' : 'Remove member';
     const message = isCurrentUser
-      ? "Are you sure you want to leave this list?"
+      ? 'Are you sure you want to leave this list?'
       : `Remove ${member.profile.display_name ?? member.profile.email} from this list?`;
 
     Alert.alert(label, message, [
-      { text: "Cancel", style: "cancel" },
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: isCurrentUser ? "Leave" : "Remove",
-        style: "destructive",
+        text: isCurrentUser ? 'Leave' : 'Remove',
+        style: 'destructive',
         onPress: () => onRemove(member.id),
       },
     ]);
   }
 
   function handleRoleToggle() {
-    const newRole = member.role === "viewer" ? "editor" : "viewer";
+    const newRole = member.role === 'viewer' ? 'editor' : 'viewer';
     onChangeRole(member.id, newRole);
   }
 
@@ -57,7 +57,7 @@ export default function MemberRow({
       {/* Info */}
       <View className="flex-1">
         <Text className="text-sm font-semibold text-gray-800">
-          {member.profile.display_name ?? "—"}
+          {member.profile.display_name ?? '—'}
           {isCurrentUser && (
             <Text className="text-gray-400 font-normal"> (you)</Text>
           )}
@@ -73,12 +73,12 @@ export default function MemberRow({
           <TouchableOpacity
             onPress={handleRoleToggle}
             className={`rounded-xl px-3 py-1.5 ${
-              member.role === "editor" ? "bg-indigo-50" : "bg-gray-100"
+              member.role === 'editor' ? 'bg-indigo-50' : 'bg-gray-100'
             }`}
           >
             <Text
               className={`text-xs font-medium ${
-                member.role === "editor" ? "text-indigo-600" : "text-gray-500"
+                member.role === 'editor' ? 'text-indigo-600' : 'text-gray-500'
               }`}
             >
               {member.role}
@@ -97,7 +97,7 @@ export default function MemberRow({
             className="bg-red-50 rounded-xl px-3 py-1.5"
           >
             <Text className="text-xs text-red-500">
-              {isCurrentUser ? "Leave" : "Remove"}
+              {isCurrentUser ? 'Leave' : 'Remove'}
             </Text>
           </TouchableOpacity>
         ) : null}

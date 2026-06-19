@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "../services/supabase";
+import { createContext, useContext, useEffect, useState } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '../services/supabase';
 
 type AuthContextType = {
   user: User | null;
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // If user just logged in, ensure their profile exists in the database
         if (session?.user) {
           try {
-            await supabase.from("profiles").upsert({
+            await supabase.from('profiles').upsert({
               id: session.user.id,
               email: session.user.email,
             });

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../services/supabase";
-import { ListRole } from "../types";
+import { useState, useEffect } from 'react';
+import { supabase } from '../services/supabase';
+import { ListRole } from '../types';
 
 export function useListRole(
   listId: string,
@@ -21,15 +21,15 @@ export function useListRole(
         if (!user || cancelled) return;
 
         if (user.id === ownerId) {
-          setRole("owner");
+          setRole('owner');
           return;
         }
 
         const { data } = await supabase
-          .from("list_members")
-          .select("role")
-          .eq("list_id", listId)
-          .eq("user_id", user.id)
+          .from('list_members')
+          .select('role')
+          .eq('list_id', listId)
+          .eq('user_id', user.id)
           .single();
 
         if (!cancelled) {
