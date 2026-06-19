@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from 'react';
 import {
   fetchMembers,
   findUserByEmail,
@@ -6,15 +6,15 @@ import {
   updateMemberRole,
   removeMember,
   MemberWithProfile,
-} from "../services/sharing";
+} from '../services/sharing';
 
 type UseShareListReturn = {
   members: MemberWithProfile[];
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  inviteByEmail: (email: string, role: "viewer" | "editor") => Promise<void>;
-  changeRole: (memberId: string, role: "viewer" | "editor") => Promise<void>;
+  inviteByEmail: (email: string, role: 'viewer' | 'editor') => Promise<void>;
+  changeRole: (memberId: string, role: 'viewer' | 'editor') => Promise<void>;
   kickMember: (memberId: string) => Promise<void>;
 };
 
@@ -30,7 +30,7 @@ export function useShareList(listId: string): UseShareListReturn {
       const data = await fetchMembers(listId);
       setMembers(data);
     } catch (e: any) {
-      setError(e.message ?? "Failed to load members");
+      setError(e.message ?? 'Failed to load members');
     } finally {
       setLoading(false);
     }
@@ -44,9 +44,9 @@ export function useShareList(listId: string): UseShareListReturn {
   // Separating lookup from invite keeps error messages clear:
   // "User not found" vs "Already a member" are very different errors
   const inviteByEmail = useCallback(
-    async (email: string, role: "viewer" | "editor") => {
+    async (email: string, role: 'viewer' | 'editor') => {
       const user = await findUserByEmail(email);
-      if (!user) throw new Error("No account found with that email address");
+      if (!user) throw new Error('No account found with that email address');
 
       await inviteMember(listId, user.id, role);
 
@@ -57,7 +57,7 @@ export function useShareList(listId: string): UseShareListReturn {
   );
 
   const changeRole = useCallback(
-    async (memberId: string, role: "viewer" | "editor") => {
+    async (memberId: string, role: 'viewer' | 'editor') => {
       const updated = await updateMemberRole(memberId, role);
       setMembers((prev) =>
         prev.map((m) => (m.id === memberId ? { ...m, role: updated.role } : m)),

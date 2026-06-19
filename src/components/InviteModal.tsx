@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,23 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
+} from 'react-native';
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onInvite: (email: string, role: "viewer" | "editor") => Promise<void>;
+  onInvite: (email: string, role: 'viewer' | 'editor') => Promise<void>;
 };
 
 export default function InviteModal({ visible, onClose, onInvite }: Props) {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"viewer" | "editor">("viewer");
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<'viewer' | 'editor'>('viewer');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function handleClose() {
-    setEmail("");
-    setRole("viewer");
+    setEmail('');
+    setRole('viewer');
     setError(null);
     onClose();
   }
@@ -33,14 +33,14 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
     const trimmed = email.trim().toLowerCase();
 
     if (!trimmed) {
-      setError("Please enter an email address");
+      setError('Please enter an email address');
       return;
     }
 
     // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmed)) {
-      setError("Please enter a valid email address");
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -50,7 +50,7 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
       await onInvite(trimmed, role);
       handleClose();
     } catch (e: any) {
-      setError(e.message ?? "Something went wrong");
+      setError(e.message ?? 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
       onRequestClose={handleClose}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
         <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
@@ -93,29 +93,29 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
           {/* Role selector */}
           <Text className="text-sm font-medium text-gray-600 mb-2">Role</Text>
           <View className="flex-row gap-3 mb-6">
-            {(["viewer", "editor"] as const).map((r) => (
+            {(['viewer', 'editor'] as const).map((r) => (
               <TouchableOpacity
                 key={r}
                 onPress={() => setRole(r)}
                 className={`flex-1 rounded-xl py-3 items-center border ${
                   role === r
-                    ? "bg-indigo-600 border-indigo-600"
-                    : "bg-white border-gray-200"
+                    ? 'bg-indigo-600 border-indigo-600'
+                    : 'bg-white border-gray-200'
                 }`}
               >
                 <Text
                   className={`text-sm font-semibold capitalize ${
-                    role === r ? "text-white" : "text-gray-600"
+                    role === r ? 'text-white' : 'text-gray-600'
                   }`}
                 >
                   {r}
                 </Text>
                 <Text
                   className={`text-xs mt-0.5 ${
-                    role === r ? "text-indigo-200" : "text-gray-400"
+                    role === r ? 'text-indigo-200' : 'text-gray-400'
                   }`}
                 >
-                  {r === "viewer" ? "Can view only" : "Can edit items"}
+                  {r === 'viewer' ? 'Can view only' : 'Can edit items'}
                 </Text>
               </TouchableOpacity>
             ))}

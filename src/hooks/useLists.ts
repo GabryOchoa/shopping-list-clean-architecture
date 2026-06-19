@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { List } from "../types";
+import { useState, useEffect, useCallback } from 'react';
+import { List } from '../types';
 import {
   fetchLists,
   fetchSharedLists,
@@ -7,7 +7,7 @@ import {
   createList,
   updateList,
   deleteList,
-} from "../services/lists";
+} from '../services/lists';
 
 type UseListReturn = {
   lists: List[];
@@ -37,7 +37,7 @@ export function useLists(): UseListReturn {
       setLists(owned);
       setSharedEntries(shared);
     } catch (e: any) {
-      setError(e.message ?? "Failed to fetch lists");
+      setError(e.message ?? 'Failed to fetch lists');
     } finally {
       setLoading(false);
     }

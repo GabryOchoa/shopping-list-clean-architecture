@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
+import React, { useState, useMemo } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
 import {
   View,
   Text,
@@ -8,15 +8,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-} from "react-native";
-import { useLists } from "../hooks/useLists";
-import { useAuth } from "../context/AuthContext";
-import { useAuthActions } from "../hooks/useAuthActions";
-import ListCard from "../components/ListCard";
-import ListModal from "../components/ListModal";
-import { List, ListRole } from "../types";
+} from 'react-native';
+import { useLists } from '../hooks/useLists';
+import { useAuth } from '../context/AuthContext';
+import { useAuthActions } from '../hooks/useAuthActions';
+import ListCard from '../components/ListCard';
+import ListModal from '../components/ListModal';
+import { List, ListRole } from '../types';
 
-type Props = NativeStackScreenProps<RootStackParamList, "Lists">;
+type Props = NativeStackScreenProps<RootStackParamList, 'Lists'>;
 
 type ListItem = {
   list: List;
@@ -47,12 +47,12 @@ export default function ListsScreen({ navigation }: Props) {
 
   const sections = useMemo<Section[]>(() => {
     const ownedSection: Section = {
-      title: "My Lists",
-      data: lists.map((list) => ({ list, role: "owner" as ListRole })),
+      title: 'My Lists',
+      data: lists.map((list) => ({ list, role: 'owner' as ListRole })),
     };
 
     const sharedSection: Section = {
-      title: "Shared with me",
+      title: 'Shared with me',
       data: sharedEntries.map((entry) => ({
         list: entry.list,
         role: entry.role,
@@ -129,14 +129,14 @@ export default function ListsScreen({ navigation }: Props) {
             list={item.list}
             role={item.role}
             onPress={(list) =>
-              navigation.navigate("ListDetail", {
+              navigation.navigate('ListDetail', {
                 listId: list.id,
                 listName: list.name,
                 ownerId: list.owner_id,
               })
             }
-            onEdit={item.role === "owner" ? handleEdit : undefined}
-            onDelete={item.role === "owner" ? removeList : undefined}
+            onEdit={item.role === 'owner' ? handleEdit : undefined}
+            onDelete={item.role === 'owner' ? removeList : undefined}
           />
         )}
         refreshControl={

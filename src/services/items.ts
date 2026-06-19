@@ -1,12 +1,12 @@
-import { supabase } from "./supabase";
-import { Item } from "../types";
+import { supabase } from './supabase';
+import { Item } from '../types';
 
 export async function fetchItems(listId: string): Promise<Item[]> {
   const { data, error } = await supabase
-    .from("items")
-    .select("*")
-    .eq("list_id", listId)
-    .order("created_at", { ascending: true });
+    .from('items')
+    .select('*')
+    .eq('list_id', listId)
+    .order('created_at', { ascending: true });
 
   if (error) throw new Error(error.message);
   return data as Item[];
@@ -18,7 +18,7 @@ export async function createItem(
   quantity: number = 1,
 ): Promise<Item> {
   const { data, error } = await supabase
-    .from("items")
+    .from('items')
     .insert({
       list_id: listId,
       name: name.trim(),
@@ -34,15 +34,15 @@ export async function createItem(
 
 export async function updateItem(
   id: string,
-  updates: Partial<Pick<Item, "name" | "quantity" | "is_checked">>,
+  updates: Partial<Pick<Item, 'name' | 'quantity' | 'is_checked'>>,
 ): Promise<Item> {
   const { data, error } = await supabase
-    .from("items")
+    .from('items')
     .update({
       ...updates,
       name: updates.name?.trim(),
     })
-    .eq("id", id)
+    .eq('id', id)
     .select()
     .single();
 
@@ -62,7 +62,7 @@ export async function toggleItem(
 }
 
 export async function deleteItem(id: string): Promise<void> {
-  const { error } = await supabase.from("items").delete().eq("id", id);
+  const { error } = await supabase.from('items').delete().eq('id', id);
 
   if (error) throw new Error(error.message);
 }

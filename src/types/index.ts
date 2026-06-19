@@ -1,4 +1,4 @@
-export type ListRole = "owner" | "editor" | "viewer";
+export type ListRole = 'owner' | 'editor' | 'viewer';
 
 export type Profile = {
   id: string;
@@ -30,6 +30,6 @@ export type ListMember = {
   id: string;
   list_id: string;
   user_id: string;
-  role: "viewer" | "editor";
+  role: 'viewer' | 'editor';
   joined_at: string;
 };

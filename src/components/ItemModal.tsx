@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
-import { Item } from "../types";
+} from 'react-native';
+import { Item } from '../types';
 
 type Props = {
   visible: boolean;
@@ -24,8 +24,8 @@ export default function ItemModal({
   onSubmit,
   editingItem,
 }: Props) {
-  const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("1");
+  const [name, setName] = useState('');
+  const [quantity, setQuantity] = useState('1');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,21 +34,21 @@ export default function ItemModal({
       setName(editingItem.name);
       setQuantity(String(editingItem.quantity));
     } else {
-      setName("");
-      setQuantity("1");
+      setName('');
+      setQuantity('1');
     }
     setError(null);
   }, [editingItem, visible]);
 
   async function handleSubmit() {
     if (!name.trim()) {
-      setError("Item name is required");
+      setError('Item name is required');
       return;
     }
 
     const parseQty = parseInt(quantity, 10);
     if (isNaN(parseQty) || parseQty < 1) {
-      setError("Quantity must be at least 1");
+      setError('Quantity must be at least 1');
       return;
     }
 
@@ -58,7 +58,7 @@ export default function ItemModal({
       await onSubmit(name.trim(), parseQty);
       onClose();
     } catch (e: any) {
-      setError(e.message ?? "Something went wrong");
+      setError(e.message ?? 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -67,11 +67,11 @@ export default function ItemModal({
   // Quantity stepper helpers
 
   function increment() {
-    setQuantity((prev) => String(Math.min(parseInt(prev || "0") + 1, 99)));
+    setQuantity((prev) => String(Math.min(parseInt(prev || '0') + 1, 99)));
   }
 
   function decrement() {
-    setQuantity((prev) => String(Math.max(parseInt(prev || "1") - 1, 1)));
+    setQuantity((prev) => String(Math.max(parseInt(prev || '1') - 1, 1)));
   }
 
   const isEditing = !!editingItem;
@@ -84,12 +84,12 @@ export default function ItemModal({
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
         <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
           <Text className="text-xl font-bold text-gray-800 mb-6">
-            {isEditing ? "Edit item" : "Add item"}
+            {isEditing ? 'Edit item' : 'Add item'}
           </Text>
 
           {/* Name */}
@@ -148,7 +148,7 @@ export default function ItemModal({
                 <ActivityIndicator color="#fff" />
               ) : (
                 <Text className="text-white font-semibold">
-                  {isEditing ? "Save changes" : "Add item"}
+                  {isEditing ? 'Save changes' : 'Add item'}
                 </Text>
               )}
             </TouchableOpacity>

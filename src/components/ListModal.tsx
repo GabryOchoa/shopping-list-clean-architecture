@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
-import { List } from "../types";
+} from 'react-native';
+import { List } from '../types';
 
 type Props = {
   visible: boolean;
@@ -24,8 +24,8 @@ export default function ListModal({
   onSubmit,
   editingList,
 }: Props) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,17 +33,17 @@ export default function ListModal({
   useEffect(() => {
     if (editingList) {
       setName(editingList.name);
-      setDescription(editingList.description ?? "");
+      setDescription(editingList.description ?? '');
     } else {
-      setName("");
-      setDescription("");
+      setName('');
+      setDescription('');
     }
     setError(null);
   }, [editingList, visible]);
 
   async function handleSubmit() {
     if (!name.trim()) {
-      setError("Name is required");
+      setError('Name is required');
       return;
     }
 
@@ -53,7 +53,7 @@ export default function ListModal({
       await onSubmit(name.trim(), description.trim() || undefined);
       onClose();
     } catch (e: any) {
-      setError(e.message || "An error occurred");
+      setError(e.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -69,12 +69,12 @@ export default function ListModal({
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
         <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
           <Text className="text-xl font-bold text-gray-800 mb-6">
-            {isEditing ? "Edit list" : "New list"}
+            {isEditing ? 'Edit list' : 'New list'}
           </Text>
 
           <Text className="text-sm font-medium text-gray-600 mb-1">Name *</Text>
@@ -117,7 +117,7 @@ export default function ListModal({
                 <ActivityIndicator color="#fff" />
               ) : (
                 <Text className="text-white font-semibold">
-                  {isEditing ? "Save changes" : "Create list"}
+                  {isEditing ? 'Save changes' : 'Create list'}
                 </Text>
               )}
             </TouchableOpacity>

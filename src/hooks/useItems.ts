@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
-import { Item } from "../types";
+import { useState, useEffect, useCallback } from 'react';
+import { Item } from '../types';
 import {
   fetchItems,
   createItem,
   updateItem,
   toggleItem,
   deleteItem,
-} from "../services/items";
+} from '../services/items';
 
 type UseItemsReturn = {
   items: Item[];
@@ -31,7 +31,7 @@ export function useItems(listId: string): UseItemsReturn {
       const data = await fetchItems(listId);
       setItems(data);
     } catch (e: any) {
-      setError(e.message ?? "Failed to load items");
+      setError(e.message ?? 'Failed to load items');
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ export function useItems(listId: string): UseItemsReturn {
     );
     try {
       await toggleItem(id, isChecked);
-    } catch (e: any) {
+    } catch {
       // Revert on failure
       setItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, is_checked: !isChecked } : i)),
