@@ -1,23 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import { signInWithGoogle } from "../services/auth";
+import { useAuthActions } from "../hooks/useAuthActions";
 
 export default function LoginScreen() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleGoogleSignIn() {
-    try {
-      setLoading(true);
-      setError(null);
-      await signInWithGoogle();
-    } catch (e: any) {
-      setError("Sign-in failed. Please try again.");
-      console.error("Google Sign-In Error:", e);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { loading, error, handleSignIn } = useAuthActions();
 
   return (
     <View className="flex-1 items-center justify-center bg-white px-6">
@@ -29,7 +15,7 @@ export default function LoginScreen() {
       {error && <Text className="text-red-500 mb-4 text-sm">{error}</Text>}
 
       <TouchableOpacity
-        onPress={handleGoogleSignIn}
+        onPress={handleSignIn}
         disabled={loading}
         className="flex-row items-center bg-white border border-gray-300 rounded-xl px-6 py-4 w-full justify-center shadow-sm"
       >
