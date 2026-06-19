@@ -1,22 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import {
   View,
   Text,
-  FlatList,
+  SectionList,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { useLists } from "../hooks/useLists";
 import { useAuth } from "../context/AuthContext";
-import { signOut } from "../services/auth";
+import { useAuthActions } from "../hooks/useAuthActions";
 import ListCard from "../components/ListCard";
 import ListModal from "../components/ListModal";
-import { List } from "../types";
+import { List, ListRole } from "../types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Lists">;
+
+type ListItem = {
+  list: List;
+  role: ListRole;
+};
+
+type Section = {
+  title: string;
+  data: ListItem[];
+};
 
 export default function ListsScreen({ navigation }: Props) {
   const {
@@ -30,9 +40,29 @@ export default function ListsScreen({ navigation }: Props) {
     removeList,
   } = useLists();
   const { user } = useAuth();
+  const { handleSignOut } = useAuthActions();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingList, setEditingList] = useState<List | null>(null);
+
+  const sections = useMemo<Section[]>(() => {
+    const ownedSection: Section = {
+      title: "My Lists",
+      data: lists.map((list) => ({ list, role: "owner" as ListRole })),
+    };
+
+    const sharedSection: Section = {
+      title: "Shared with me",
+      data: sharedEntries.map((entry) => ({
+        list: entry.list,
+        role: entry.role,
+      })),
+    };
+
+    return sharedSection.data.length > 0
+      ? [ownedSection, sharedSection]
+      : [ownedSection];
+  }, [lists, sharedEntries]);
 
   function handleEdit(list: List) {
     setEditingList(list);
@@ -70,7 +100,7 @@ export default function ListsScreen({ navigation }: Props) {
             <Text className="text-sm text-gray-400 mt-1">{user?.email}</Text>
           </View>
           <TouchableOpacity
-            onPress={signOut}
+            onPress={handleSignOut}
             className="bg-gray-100 rounded-xl px-4 py-2"
           >
             <Text className="text-sm text-gray-600">Sign out</Text>
@@ -85,70 +115,30 @@ export default function ListsScreen({ navigation }: Props) {
         </View>
       )}
 
-      <FlatList
-        data={lists}
-        keyExtractor={(item) => item.id}
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.list.id}
         contentContainerStyle={{ padding: 16 }}
-        ListHeaderComponent={
-          <>
-            {/* My Lists section */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-              My Lists
-            </Text>
-
-            {lists.length === 0 && (
-              <View className="items-center justify-center py-10 mb-6">
-                <Text className="text-gray-400 text-base">No lists yet</Text>
-                <Text className="text-gray-400 text-sm mt-1">
-                  Tap + to create your first one
-                </Text>
-              </View>
-            )}
-
-            {lists.map((item) => (
-              <ListCard
-                key={item.id}
-                list={item}
-                role="owner"
-                onPress={(list) =>
-                  navigation.navigate("ListDetail", {
-                    listId: list.id,
-                    listName: list.name,
-                    ownerId: list.owner_id,
-                  })
-                }
-                onEdit={handleEdit}
-                onDelete={removeList}
-              />
-            ))}
-
-            {/* Shared with me section */}
-            {sharedEntries.length > 0 && (
-              <>
-                <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">
-                  Shared with me
-                </Text>
-
-                {sharedEntries.map((entry) => (
-                  <ListCard
-                    key={entry.list.id}
-                    list={entry.list}
-                    role={entry.role}
-                    onPress={(list) =>
-                      navigation.navigate("ListDetail", {
-                        listId: list.id,
-                        listName: list.name,
-                        ownerId: list.owner_id,
-                      })
-                    }
-                  />
-                ))}
-              </>
-            )}
-          </>
-        }
-        renderItem={() => null}
-        ListEmptyComponent={null}
+        renderSectionHeader={({ section }) => (
+          <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 mt-2">
+            {section.title}
+          </Text>
+        )}
+        renderItem={({ item }) => (
+          <ListCard
+            list={item.list}
+            role={item.role}
+            onPress={(list) =>
+              navigation.navigate("ListDetail", {
+                listId: list.id,
+                listName: list.name,
+                ownerId: list.owner_id,
+              })
+            }
+            onEdit={item.role === "owner" ? handleEdit : undefined}
+            onDelete={item.role === "owner" ? removeList : undefined}
+          />
+        )}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refresh} />
         }
