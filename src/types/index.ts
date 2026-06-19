@@ -33,12 +33,3 @@ export type ListMember = {
   role: "viewer" | "editor";
   joined_at: string;
 };
-
-//Useful composite types for UI
-export type ListWithMembers = List & {
-  list_members: ListMember[];
-};
-
-export type ItemWithList = Item & {
-  list: List;
-};
