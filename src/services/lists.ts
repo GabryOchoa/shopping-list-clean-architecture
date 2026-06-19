@@ -4,15 +4,15 @@ import { List } from "../types";
 // Fetch lists owned by the current user, ordered by creation date (newest first)
 export async function fetchLists(): Promise<List[]> {
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) throw new Error("User not authenticated");
+  if (!session?.user) throw new Error("User not authenticated");
 
   const { data, error } = await supabase
     .from("lists")
     .select("*")
-    .eq("owner_id", user.id)
+    .eq("owner_id", session.user.id)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -27,15 +27,15 @@ export type SharedListEntry = {
 // Fetch lists shared with the current user via list_members
 export async function fetchSharedLists(): Promise<SharedListEntry[]> {
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) throw new Error("User not authenticated");
+  if (!session?.user) throw new Error("User not authenticated");
 
   const { data, error } = await supabase
     .from("list_members")
     .select("role, list:lists(*)")
-    .eq("user_id", user.id)
+    .eq("user_id", session.user.id)
     .order("joined_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -54,17 +54,17 @@ export async function createList(
   description?: string,
 ): Promise<List> {
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) throw new Error("User not authenticated");
+  if (!session?.user) throw new Error("User not authenticated");
 
   const { data, error } = await supabase
     .from("lists")
     .insert({
       name: name.trim(),
       description: description?.trim() ?? null,
-      owner_id: user.id,
+      owner_id: session.user.id,
     })
     .select()
     .single();
