@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { mapError } from '../utils/mapError';
 
 type Props = {
   visible: boolean;
@@ -50,7 +51,7 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
       await onInvite(trimmed, role);
       handleClose();
     } catch (e: any) {
-      setError(e.message ?? 'Something went wrong');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }

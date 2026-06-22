@@ -13,6 +13,7 @@ import { useItems } from '../hooks/useItems';
 import { useListRole } from '../hooks/useListRole';
 import ItemRow from '../components/ItemRow';
 import ItemModal from '../components/ItemModal';
+import ErrorBanner from '../components/ErrorBanner';
 import { Item } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListDetail'>;
@@ -23,6 +24,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
     items,
     loading,
     error,
+    clearError,
     refresh,
     addItem,
     editItem,
@@ -34,6 +36,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const canMutateItems = role === 'owner' || role === 'editor';
   const isOwner = role === 'owner';
@@ -49,10 +52,16 @@ export default function ListDetailScreen({ route, navigation }: Props) {
   }
 
   async function handleSubmit(name: string, quantity: number) {
-    if (editingItem) {
-      await editItem(editingItem.id, name, quantity);
-    } else {
-      await addItem(name, quantity);
+    try {
+      setSubmitting(true);
+      if (editingItem) {
+        await editItem(editingItem.id, name, quantity);
+      } else {
+        await addItem(name, quantity);
+      }
+      handleCloseModal();
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -135,11 +144,7 @@ export default function ListDetailScreen({ route, navigation }: Props) {
       </View>
 
       {/* Error banner */}
-      {error && (
-        <View className="bg-red-50 px-6 py-3 border-b border-red-100">
-          <Text className="text-red-500 text-sm">{error}</Text>
-        </View>
-      )}
+      {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
       {/* Items list */}
       <FlatList
@@ -174,9 +179,14 @@ export default function ListDetailScreen({ route, navigation }: Props) {
       {canMutateItems && (
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
+          disabled={submitting}
           className="absolute bottom-8 right-6 bg-indigo-600 w-14 h-14 rounded-full items-center justify-center shadow-lg"
         >
-          <Text className="text-white text-3xl leading-none">+</Text>
+          {submitting ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white text-3xl leading-none">+</Text>
+          )}
         </TouchableOpacity>
       )}
 

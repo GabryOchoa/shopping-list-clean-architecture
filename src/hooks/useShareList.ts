@@ -7,11 +7,13 @@ import {
   removeMember,
   MemberWithProfile,
 } from '../services/sharing';
+import { mapError } from '../utils/mapError';
 
 type UseShareListReturn = {
   members: MemberWithProfile[];
   loading: boolean;
   error: string | null;
+  clearError: () => void;
   refresh: () => Promise<void>;
   inviteByEmail: (email: string, role: 'viewer' | 'editor') => Promise<void>;
   changeRole: (memberId: string, role: 'viewer' | 'editor') => Promise<void>;
@@ -30,7 +32,7 @@ export function useShareList(listId: string): UseShareListReturn {
       const data = await fetchMembers(listId);
       setMembers(data);
     } catch (e: any) {
-      setError(e.message ?? 'Failed to load members');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }
@@ -71,10 +73,13 @@ export function useShareList(listId: string): UseShareListReturn {
     setMembers((prev) => prev.filter((m) => m.id !== memberId));
   }, []);
 
+  const clearError = useCallback(() => setError(null), []);
+
   return {
     members,
     loading,
     error,
+    clearError,
     refresh,
     inviteByEmail,
     changeRole,

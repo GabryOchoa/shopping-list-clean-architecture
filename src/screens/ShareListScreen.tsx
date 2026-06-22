@@ -13,6 +13,7 @@ import { useShareList } from '../hooks/useShareList';
 import { useAuth } from '../context/AuthContext';
 import MemberRow from '../components/MemberRow';
 import InviteModal from '../components/InviteModal';
+import ErrorBanner from '../components/ErrorBanner';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ShareList'>;
 
@@ -23,6 +24,7 @@ export default function ShareListScreen({ route, navigation }: Props) {
     members,
     loading,
     error,
+    clearError,
     refresh,
     inviteByEmail,
     changeRole,
@@ -74,11 +76,7 @@ export default function ShareListScreen({ route, navigation }: Props) {
       </View>
 
       {/* Error banner */}
-      {error && (
-        <View className="bg-red-50 px-6 py-3 border-b border-red-100">
-          <Text className="text-red-500 text-sm">{error}</Text>
-        </View>
-      )}
+      {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
       {/* Members list */}
       {loading && members.length === 0 ? (

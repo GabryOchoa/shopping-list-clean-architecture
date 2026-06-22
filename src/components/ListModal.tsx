@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { List } from '../types';
+import { mapError } from '../utils/mapError';
 
 type Props = {
   visible: boolean;
@@ -53,7 +54,7 @@ export default function ListModal({
       await onSubmit(name.trim(), description.trim() || undefined);
       onClose();
     } catch (e: any) {
-      setError(e.message || 'An error occurred');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }
