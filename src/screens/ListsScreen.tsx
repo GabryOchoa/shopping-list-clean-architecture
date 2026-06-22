@@ -14,6 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAuthActions } from '../hooks/useAuthActions';
 import ListCard from '../components/ListCard';
 import ListModal from '../components/ListModal';
+import ErrorBanner from '../components/ErrorBanner';
 import { List, ListRole } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Lists'>;
@@ -34,6 +35,7 @@ export default function ListsScreen({ navigation }: Props) {
     sharedEntries,
     loading,
     error,
+    clearError,
     refresh,
     addList,
     editList,
@@ -44,6 +46,7 @@ export default function ListsScreen({ navigation }: Props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingList, setEditingList] = useState<List | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const sections = useMemo<Section[]>(() => {
     const ownedSection: Section = {
@@ -75,10 +78,16 @@ export default function ListsScreen({ navigation }: Props) {
   }
 
   async function handleSubmit(name: string, description?: string) {
-    if (editingList) {
-      await editList(editingList.id, name, description);
-    } else {
-      await addList(name, description);
+    try {
+      setSubmitting(true);
+      if (editingList) {
+        await editList(editingList.id, name, description);
+      } else {
+        await addList(name, description);
+      }
+      handleCloseModal();
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -109,11 +118,7 @@ export default function ListsScreen({ navigation }: Props) {
       </View>
 
       {/* Error banner */}
-      {error && (
-        <View className="bg-red-50 px-6 py-3 border-b border-red-100">
-          <Text className="text-red-500 text-sm">{error}</Text>
-        </View>
-      )}
+      {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
       <SectionList
         sections={sections}
@@ -147,9 +152,14 @@ export default function ListsScreen({ navigation }: Props) {
       {/* FAB — create new list */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
+        disabled={submitting}
         className="absolute bottom-8 right-6 bg-indigo-600 w-14 h-14 rounded-full items-center justify-center shadow-lg"
       >
-        <Text className="text-white text-3xl leading-none">+</Text>
+        {submitting ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text className="text-white text-3xl leading-none">+</Text>
+        )}
       </TouchableOpacity>
 
       <ListModal
