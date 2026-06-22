@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { Item } from '../types';
+import { mapError } from '../utils/mapError';
 
 type Props = {
   visible: boolean;
@@ -58,7 +59,7 @@ export default function ItemModal({
       await onSubmit(name.trim(), parseQty);
       onClose();
     } catch (e: any) {
-      setError(e.message ?? 'Something went wrong');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }
