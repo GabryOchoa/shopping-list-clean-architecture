@@ -7,11 +7,13 @@ import {
   toggleItem,
   deleteItem,
 } from '../services/items';
+import { mapError } from '../utils/mapError';
 
 type UseItemsReturn = {
   items: Item[];
   loading: boolean;
   error: string | null;
+  clearError: () => void;
   refresh: () => Promise<void>;
   addItem: (name: string, quantity?: number) => Promise<void>;
   editItem: (id: string, name: string, quantity: number) => Promise<void>;
@@ -31,7 +33,7 @@ export function useItems(listId: string): UseItemsReturn {
       const data = await fetchItems(listId);
       setItems(data);
     } catch (e: any) {
-      setError(e.message ?? 'Failed to load items');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }
@@ -73,15 +75,28 @@ export function useItems(listId: string): UseItemsReturn {
     }
   }, []);
 
-  const removeItem = useCallback(async (id: string) => {
-    await deleteItem(id);
-    setItems((prev) => prev.filter((i) => i.id !== id));
-  }, []);
+  // Remove an item with optimistic rollback on failure
+  const removeItem = useCallback(
+    async (id: string) => {
+      const previous = items;
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      try {
+        await deleteItem(id);
+      } catch (e: any) {
+        setItems(previous);
+        setError(mapError(e));
+      }
+    },
+    [items],
+  );
+
+  const clearError = useCallback(() => setError(null), []);
 
   return {
     items,
     loading,
     error,
+    clearError,
     refresh,
     addItem,
     editItem,

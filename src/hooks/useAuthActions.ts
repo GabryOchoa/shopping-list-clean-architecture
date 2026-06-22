@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { signInWithGoogle, signOut } from '../services/auth';
+import { mapError } from '../utils/mapError';
 
 type UseAuthActionsReturn = {
   loading: boolean;
@@ -18,7 +19,7 @@ export function useAuthActions(): UseAuthActionsReturn {
       setError(null);
       await signInWithGoogle();
     } catch (e: any) {
-      setError('Sign-in failed. Please try again.');
+      setError(mapError(e));
       console.error('Google Sign-In Error:', e);
     } finally {
       setLoading(false);
@@ -31,7 +32,7 @@ export function useAuthActions(): UseAuthActionsReturn {
       setError(null);
       await signOut();
     } catch (e: any) {
-      setError('Sign-out failed. Please try again.');
+      setError(mapError(e));
       console.error('Sign-Out Error:', e);
     } finally {
       setLoading(false);

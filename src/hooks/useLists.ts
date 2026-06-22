@@ -8,12 +8,14 @@ import {
   updateList,
   deleteList,
 } from '../services/lists';
+import { mapError } from '../utils/mapError';
 
 type UseListReturn = {
   lists: List[];
   sharedEntries: SharedListEntry[];
   loading: boolean;
   error: string | null;
+  clearError: () => void;
   refresh: () => Promise<void>;
   addList: (name: string, description?: string) => Promise<void>;
   editList: (id: string, name: string, description?: string) => Promise<void>;
@@ -37,7 +39,7 @@ export function useLists(): UseListReturn {
       setLists(owned);
       setSharedEntries(shared);
     } catch (e: any) {
-      setError(e.message ?? 'Failed to fetch lists');
+      setError(mapError(e));
     } finally {
       setLoading(false);
     }
@@ -64,18 +66,29 @@ export function useLists(): UseListReturn {
     [],
   );
 
-  // Remove a list and update state
-  const removeList = useCallback(async (id: string) => {
-    await deleteList(id);
-    // Remove from local state immediately
-    setLists((prev) => prev.filter((l) => l.id !== id));
-  }, []);
+  // Remove a list with optimistic rollback on failure
+  const removeList = useCallback(
+    async (id: string) => {
+      const previous = lists;
+      setLists((prev) => prev.filter((l) => l.id !== id));
+      try {
+        await deleteList(id);
+      } catch (e: any) {
+        setLists(previous);
+        setError(mapError(e));
+      }
+    },
+    [lists],
+  );
+
+  const clearError = useCallback(() => setError(null), []);
 
   return {
     lists,
     sharedEntries,
     loading,
     error,
+    clearError,
     refresh,
     addList,
     editList,
