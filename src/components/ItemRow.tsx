@@ -10,13 +10,7 @@ type Props = {
   onDelete: (id: string) => void;
 };
 
-export default function ItemRow({
-  item,
-  role,
-  onToggle,
-  onEdit,
-  onDelete,
-}: Props) {
+function ItemRow({ item, role, onToggle, onEdit, onDelete }: Props) {
   const canMutate = role === 'owner' || role === 'editor';
 
   function handleDelete() {
@@ -83,3 +77,5 @@ export default function ItemRow({
     </View>
   );
 }
+
+export default React.memo(ItemRow);

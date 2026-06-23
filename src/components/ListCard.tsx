@@ -10,13 +10,7 @@ type Props = {
   onDelete?: (id: string) => void;
 };
 
-export default function ListCard({
-  list,
-  role,
-  onPress,
-  onEdit,
-  onDelete,
-}: Props) {
+function ListCard({ list, role, onPress, onEdit, onDelete }: Props) {
   const isOwner = role === 'owner';
 
   function handleDelete() {
@@ -84,3 +78,5 @@ export default function ListCard({
     </TouchableOpacity>
   );
 }
+
+export default React.memo(ListCard);
