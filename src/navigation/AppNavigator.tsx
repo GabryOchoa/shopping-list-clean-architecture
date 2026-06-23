@@ -42,12 +42,34 @@ export default function AppNavigator() {
       <Stack.Navigator id="root-stack" screenOptions={{ headerShown: false }}>
         {user ? (
           <>
-            <Stack.Screen name="Lists" component={ListsScreen} />
-            <Stack.Screen name="ListDetail" component={ListDetailScreen} />
-            <Stack.Screen name="ShareList" component={ShareListScreen} />
+            <Stack.Screen
+              name="Lists"
+              component={ListsScreen}
+              options={{ animation: 'fade' }}
+            />
+            <Stack.Screen
+              name="ListDetail"
+              component={ListDetailScreen}
+              options={{
+                animation: 'slide_from_right',
+                animationDuration: 200,
+              }}
+            />
+            <Stack.Screen
+              name="ShareList"
+              component={ShareListScreen}
+              options={{
+                animation: 'slide_from_bottom',
+                animationDuration: 200,
+              }}
+            />
           </>
         ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ animation: 'fade' }}
+          />
         )}
       </Stack.Navigator>
     </NavigationContainer>

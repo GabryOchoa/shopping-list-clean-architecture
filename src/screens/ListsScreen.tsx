@@ -144,6 +144,9 @@ export default function ListsScreen({ navigation }: Props) {
             onDelete={item.role === 'owner' ? removeList : undefined}
           />
         )}
+        windowSize={7}
+        maxToRenderPerBatch={15}
+        removeClippedSubviews
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refresh} />
         }

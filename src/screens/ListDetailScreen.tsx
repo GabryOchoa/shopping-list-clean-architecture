@@ -160,6 +160,14 @@ export default function ListDetailScreen({ route, navigation }: Props) {
             onDelete={removeItem}
           />
         )}
+        getItemLayout={(_, index) => ({
+          length: 72,
+          offset: 72 * index,
+          index,
+        })}
+        windowSize={7}
+        maxToRenderPerBatch={15}
+        removeClippedSubviews
         ListEmptyComponent={
           <View className="items-center justify-center py-20">
             <Text className="text-gray-400 text-base">No items yet</Text>

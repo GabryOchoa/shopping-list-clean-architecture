@@ -101,6 +101,14 @@ export default function ShareListScreen({ route, navigation }: Props) {
               onRemove={kickMember}
             />
           )}
+          getItemLayout={(_, index) => ({
+            length: 68,
+            offset: 68 * index,
+            index,
+          })}
+          windowSize={5}
+          maxToRenderPerBatch={10}
+          removeClippedSubviews
           ListEmptyComponent={
             <View className="items-center justify-center py-16">
               <Text className="text-gray-400 text-base">No members yet</Text>

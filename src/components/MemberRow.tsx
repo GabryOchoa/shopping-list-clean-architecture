@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { MemberWithProfile } from '../services/sharing';
 import { useAuth } from '../context/AuthContext';
 
 type Props = {
   member: MemberWithProfile;
-  isOwner: boolean; // true if the current user owns the list
+  isOwner: boolean;
   onChangeRole: (memberId: string, role: 'viewer' | 'editor') => void;
   onRemove: (memberId: string) => void;
 };
 
-export default function MemberRow({
-  member,
-  isOwner,
-  onChangeRole,
-  onRemove,
-}: Props) {
+function MemberRow({ member, isOwner, onChangeRole, onRemove }: Props) {
   const { user } = useAuth();
   const isCurrentUser = member.profile.id === user?.id;
+
+  const initials = useMemo(() => {
+    return (member.profile.display_name ?? member.profile.email)
+      .slice(0, 2)
+      .toUpperCase();
+  }, [member.profile.display_name, member.profile.email]);
 
   function handleRemove() {
     const label = isCurrentUser ? 'Leave list' : 'Remove member';
@@ -39,11 +40,6 @@ export default function MemberRow({
     const newRole = member.role === 'viewer' ? 'editor' : 'viewer';
     onChangeRole(member.id, newRole);
   }
-
-  // Avatar initials fallback
-  const initials = (member.profile.display_name ?? member.profile.email)
-    .slice(0, 2)
-    .toUpperCase();
 
   return (
     <View className="flex-row items-center bg-white border border-gray-100 rounded-2xl px-4 py-3 mb-2">
@@ -105,3 +101,5 @@ export default function MemberRow({
     </View>
   );
 }
+
+export default React.memo(MemberRow);
