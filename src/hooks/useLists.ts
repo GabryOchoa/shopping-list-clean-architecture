@@ -8,6 +8,7 @@ import {
   updateList,
   deleteList,
 } from '../services/lists';
+import { useAuth } from '../context/AuthContext';
 import { mapError } from '../utils/mapError';
 
 type UseListReturn = {
@@ -23,18 +24,20 @@ type UseListReturn = {
 };
 
 export function useLists(): UseListReturn {
+  const { user } = useAuth();
   const [lists, setLists] = useState<List[]>([]);
   const [sharedEntries, setSharedEntries] = useState<SharedListEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!user) return;
     try {
       setLoading(true);
       setError(null);
       const [owned, shared] = await Promise.all([
-        fetchLists(),
-        fetchSharedLists(),
+        fetchLists(user.id),
+        fetchSharedLists(user.id),
       ]);
       setLists(owned);
       setSharedEntries(shared);
@@ -43,7 +46,7 @@ export function useLists(): UseListReturn {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   //load lists on mount
   useEffect(() => {
@@ -51,11 +54,15 @@ export function useLists(): UseListReturn {
   }, [refresh]);
 
   // Add a new list and update state
-  const addList = useCallback(async (name: string, description?: string) => {
-    const newList = await createList(name, description);
-    // Optimistically prepend so UI feels instant
-    setLists((prev) => [newList, ...prev]);
-  }, []);
+  const addList = useCallback(
+    async (name: string, description?: string) => {
+      if (!user) throw new Error('User not authenticated');
+      const newList = await createList(user.id, name, description);
+      // Optimistically prepend so UI feels instant
+      setLists((prev) => [newList, ...prev]);
+    },
+    [user],
+  );
 
   // Edit an existing list and update state
   const editList = useCallback(

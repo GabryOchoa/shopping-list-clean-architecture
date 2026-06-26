@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
+import { useAuth } from '../context/AuthContext';
 import { ListRole } from '../types';
 
 export function useListRole(
   listId: string,
   ownerId: string,
 ): { role: ListRole | null; loading: boolean } {
+  const { user } = useAuth();
   const [role, setRole] = useState<ListRole | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -14,10 +16,6 @@ export function useListRole(
 
     async function fetchRole() {
       try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
         if (!user || cancelled) return;
 
         if (user.id === ownerId) {
@@ -47,7 +45,7 @@ export function useListRole(
     return () => {
       cancelled = true;
     };
-  }, [listId, ownerId]);
+  }, [listId, ownerId, user]);
 
   return { role, loading };
 }

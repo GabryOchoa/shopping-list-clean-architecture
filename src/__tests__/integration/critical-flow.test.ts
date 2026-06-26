@@ -5,29 +5,22 @@ import { useShareList } from '../../hooks/useShareList';
 import * as listsService from '../../services/lists';
 import * as itemsService from '../../services/items';
 import * as sharingService from '../../services/sharing';
+import { useAuth } from '../../context/AuthContext';
 import { mapError } from '../../utils/mapError';
-import { supabase } from '../../services/supabase';
 
 jest.mock('../../services/lists');
 jest.mock('../../services/items');
 jest.mock('../../services/sharing');
 jest.mock('../../services/supabase');
+jest.mock('../../context/AuthContext');
 jest.mock('../../utils/mapError');
 
 const mockUser = { id: 'user-1', email: 'owner@example.com' };
-const mockSession = { user: mockUser };
 
 beforeEach(() => {
   jest.clearAllMocks();
+  (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
   (mapError as jest.Mock).mockImplementation((error) => error.message);
-  (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-    data: { session: mockSession },
-    error: null,
-  });
-  (supabase.auth.getUser as jest.Mock).mockResolvedValue({
-    data: { user: mockUser },
-    error: null,
-  });
 });
 
 describe('Critical user flow', () => {
@@ -125,6 +118,7 @@ describe('Critical user flow', () => {
 
     // Verify all services were called correctly
     expect(listsService.createList).toHaveBeenCalledWith(
+      'user-1',
       'Weekly Groceries',
       'Milk, bread, eggs',
     );
