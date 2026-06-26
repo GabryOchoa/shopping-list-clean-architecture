@@ -1,18 +1,12 @@
 import { supabase } from './supabase';
 import { List } from '../types';
 
-// Fetch lists owned by the current user, ordered by creation date (newest first)
-export async function fetchLists(): Promise<List[]> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.user) throw new Error('User not authenticated');
-
+// Fetch lists owned by a user, ordered by creation date (newest first)
+export async function fetchLists(userId: string): Promise<List[]> {
   const { data, error } = await supabase
     .from('lists')
     .select('*')
-    .eq('owner_id', session.user.id)
+    .eq('owner_id', userId)
     .order('created_at', { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -24,18 +18,14 @@ export type SharedListEntry = {
   role: 'viewer' | 'editor';
 };
 
-// Fetch lists shared with the current user via list_members
-export async function fetchSharedLists(): Promise<SharedListEntry[]> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.user) throw new Error('User not authenticated');
-
+// Fetch lists shared with a user via list_members
+export async function fetchSharedLists(
+  userId: string,
+): Promise<SharedListEntry[]> {
   const { data, error } = await supabase
     .from('list_members')
     .select('role, list:lists(*)')
-    .eq('user_id', session.user.id)
+    .eq('user_id', userId)
     .order('joined_at', { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -48,23 +38,18 @@ export async function fetchSharedLists(): Promise<SharedListEntry[]> {
   );
 }
 
-// Create a new list with the given name and optional description, associating it with the authenticated user
+// Create a new list with the given name and optional description, associating it with a user
 export async function createList(
+  userId: string,
   name: string,
   description?: string,
 ): Promise<List> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.user) throw new Error('User not authenticated');
-
   const { data, error } = await supabase
     .from('lists')
     .insert({
       name: name.trim(),
       description: description?.trim() ?? null,
-      owner_id: session.user.id,
+      owner_id: userId,
     })
     .select()
     .single();
