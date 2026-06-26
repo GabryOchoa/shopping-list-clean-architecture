@@ -13,8 +13,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-const mockUser = { id: 'user-1', email: 'test@example.com' };
-const mockSession = { user: mockUser };
+const mockUserId = 'user-1';
 const mockList = {
   id: 'list-1',
   owner_id: 'user-1',
@@ -26,11 +25,7 @@ const mockList = {
 
 describe('lists service', () => {
   describe('fetchLists', () => {
-    it('should fetch lists owned by current user', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
+    it('should fetch lists owned by user', async () => {
       (supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnValue({
           eq: jest.fn().mockReturnValue({
@@ -42,26 +37,13 @@ describe('lists service', () => {
         }),
       });
 
-      const result = await fetchLists();
+      const result = await fetchLists(mockUserId);
 
       expect(result).toEqual([mockList]);
       expect(supabase.from).toHaveBeenCalledWith('lists');
     });
 
-    it('should throw error when not authenticated', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: null },
-        error: null,
-      });
-
-      await expect(fetchLists()).rejects.toThrow('User not authenticated');
-    });
-
     it('should throw error on failure', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
       (supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnValue({
           eq: jest.fn().mockReturnValue({
@@ -73,16 +55,12 @@ describe('lists service', () => {
         }),
       });
 
-      await expect(fetchLists()).rejects.toThrow('Fetch failed');
+      await expect(fetchLists(mockUserId)).rejects.toThrow('Fetch failed');
     });
   });
 
   describe('fetchSharedLists', () => {
-    it('should fetch lists shared with current user', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
+    it('should fetch lists shared with user', async () => {
       (supabase.from as jest.Mock).mockReturnValue({
         select: jest.fn().mockReturnValue({
           eq: jest.fn().mockReturnValue({
@@ -94,29 +72,14 @@ describe('lists service', () => {
         }),
       });
 
-      const result = await fetchSharedLists();
+      const result = await fetchSharedLists(mockUserId);
 
       expect(result).toEqual([{ list: mockList, role: 'editor' }]);
-    });
-
-    it('should throw error when not authenticated', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: null },
-        error: null,
-      });
-
-      await expect(fetchSharedLists()).rejects.toThrow(
-        'User not authenticated',
-      );
     });
   });
 
   describe('createList', () => {
     it('should create a new list', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
       (supabase.from as jest.Mock).mockReturnValue({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
@@ -128,28 +91,17 @@ describe('lists service', () => {
         }),
       });
 
-      const result = await createList('Groceries', 'Weekly groceries');
+      const result = await createList(
+        mockUserId,
+        'Groceries',
+        'Weekly groceries',
+      );
 
       expect(result).toEqual(mockList);
       expect(supabase.from).toHaveBeenCalledWith('lists');
     });
 
-    it('should throw error when not authenticated', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: null },
-        error: null,
-      });
-
-      await expect(createList('Groceries')).rejects.toThrow(
-        'User not authenticated',
-      );
-    });
-
     it('should throw error on failure', async () => {
-      (supabase.auth.getSession as jest.Mock).mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
       (supabase.from as jest.Mock).mockReturnValue({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
@@ -161,7 +113,9 @@ describe('lists service', () => {
         }),
       });
 
-      await expect(createList('Groceries')).rejects.toThrow('Create failed');
+      await expect(createList(mockUserId, 'Groceries')).rejects.toThrow(
+        'Create failed',
+      );
     });
   });
 

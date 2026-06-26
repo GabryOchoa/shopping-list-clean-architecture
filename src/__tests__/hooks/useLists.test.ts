@@ -1,10 +1,14 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
 import { useLists } from '../../hooks/useLists';
 import * as listsService from '../../services/lists';
+import { useAuth } from '../../context/AuthContext';
 import { mapError } from '../../utils/mapError';
 
 jest.mock('../../services/lists');
+jest.mock('../../context/AuthContext');
 jest.mock('../../utils/mapError');
+
+const mockUser = { id: 'user-1', email: 'test@example.com' };
 
 const mockLists = [
   {
@@ -33,6 +37,7 @@ const mockSharedEntries = [
 
 beforeEach(() => {
   jest.clearAllMocks();
+  (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
   (listsService.fetchLists as jest.Mock).mockResolvedValue(mockLists);
   (listsService.fetchSharedLists as jest.Mock).mockResolvedValue(
     mockSharedEntries,
@@ -84,7 +89,11 @@ describe('useLists', () => {
     });
 
     expect(result.current.lists).toContainEqual(newList);
-    expect(listsService.createList).toHaveBeenCalledWith('New List', '');
+    expect(listsService.createList).toHaveBeenCalledWith(
+      'user-1',
+      'New List',
+      '',
+    );
   });
 
   it('should edit a list', async () => {
