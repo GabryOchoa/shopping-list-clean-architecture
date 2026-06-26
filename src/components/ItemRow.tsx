@@ -28,6 +28,7 @@ function ItemRow({ item, role, onToggle, onEdit, onDelete }: Props) {
     <View className="flex-row items-center bg-white border border-gray-100 rounded-2xl px-4 py-3 mb-2">
       {/* Checkbox */}
       <TouchableOpacity
+        testID="checkbox"
         onPress={() => onToggle(item.id, !item.is_checked)}
         className={`w-6 h-6 rounded-full border-2 mr-4 items-center justify-center ${
           item.is_checked
