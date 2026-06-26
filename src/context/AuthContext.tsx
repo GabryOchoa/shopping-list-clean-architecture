@@ -27,20 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth state changes (login / logout)
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         setSession(session);
-
-        // If user just logged in, ensure their profile exists in the database
-        if (session?.user) {
-          try {
-            await supabase.from('profiles').upsert({
-              id: session.user.id,
-              email: session.user.email,
-            });
-          } catch {
-            // Profile upsert is best-effort; don't block auth flow
-          }
-        }
       },
     );
 
@@ -48,6 +36,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       listener.subscription.unsubscribe();
     };
   }, []);
+
+  // Ensure profile exists whenever user changes — fire-and-forget,
+  // separated from onAuthStateChange to avoid contention during data fetching
+  // Only run on user change (new login), not on every session refresh
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const upsertProfile = async () => {
+      try {
+        await supabase.from('profiles').upsert({
+          id: session!.user.id,
+          email: session!.user.email,
+        });
+      } catch {
+        // Profile upsert is best-effort; don't block auth flow
+      }
+    };
+
+    upsertProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user]);
 
   return (
     <AuthContext.Provider
