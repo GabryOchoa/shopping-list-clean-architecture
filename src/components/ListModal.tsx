@@ -30,7 +30,6 @@ export default function ListModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Pre-fill form when editing
   useEffect(() => {
     if (editingList) {
       setName(editingList.name);
@@ -73,51 +72,56 @@ export default function ListModal({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
-        <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
-          <Text className="text-xl font-bold text-gray-800 mb-6">
+        <View className="bg-surface rounded-t-3xl px-6 pt-3 pb-10">
+          {/* Handle bar */}
+          <View className="w-10 h-1 bg-line rounded-full self-center mb-4" />
+
+          <Text className="text-xl font-bold text-ink mb-6">
             {isEditing ? 'Edit list' : 'New list'}
           </Text>
 
-          <Text className="text-sm font-medium text-gray-600 mb-1">Name *</Text>
+          <Text className="text-sm font-medium text-ink-soft mb-1">Name *</Text>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="e.g. Weekly groceries"
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-800 mb-4"
+            placeholderTextColor="#767C6C"
+            className="border border-line rounded-xl px-4 py-3 text-base text-ink mb-4"
             autoFocus
           />
 
-          <Text className="text-sm font-medium text-gray-600 mb-1">
+          <Text className="text-sm font-medium text-ink-soft mb-1">
             Description (optional)
           </Text>
           <TextInput
             value={description}
             onChangeText={setDescription}
             placeholder="Add a short description..."
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-800 mb-4"
+            placeholderTextColor="#767C6C"
+            className="border border-line rounded-xl px-4 py-3 text-base text-ink mb-4"
             multiline
             numberOfLines={3}
           />
 
-          {error && <Text className="text-red-500 text-sm mb-4">{error}</Text>}
+          {error && <Text className="text-danger text-sm mb-4">{error}</Text>}
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={onClose}
-              className="flex-1 border border-gray-200 rounded-xl py-4 items-center"
+              className="flex-1 border border-line rounded-xl py-4 items-center"
             >
-              <Text className="text-gray-600 font-medium">Cancel</Text>
+              <Text className="text-ink-soft font-medium">Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-indigo-600 rounded-xl py-4 items-center"
+              className="flex-1 bg-brand-green rounded-xl py-4 items-center"
             >
               {loading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color="#2E3527" />
               ) : (
-                <Text className="text-white font-semibold">
+                <Text className="text-ink font-semibold">
                   {isEditing ? 'Save changes' : 'Create list'}
                 </Text>
               )}
