@@ -42,30 +42,30 @@ describe('ItemRow', () => {
   });
 
   it('should show edit and delete buttons for owner', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ItemRow {...defaultProps} role="owner" />,
     );
 
-    expect(getByText('Edit')).toBeTruthy();
-    expect(getByText('Delete')).toBeTruthy();
+    expect(getByLabelText('Edit item')).toBeTruthy();
+    expect(getByLabelText('Delete item')).toBeTruthy();
   });
 
   it('should show edit and delete buttons for editor', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ItemRow {...defaultProps} role="editor" />,
     );
 
-    expect(getByText('Edit')).toBeTruthy();
-    expect(getByText('Delete')).toBeTruthy();
+    expect(getByLabelText('Edit item')).toBeTruthy();
+    expect(getByLabelText('Delete item')).toBeTruthy();
   });
 
   it('should not show edit and delete buttons for viewer', async () => {
-    const { queryByText } = await render(
+    const { queryByLabelText } = await render(
       <ItemRow {...defaultProps} role="viewer" />,
     );
 
-    expect(queryByText('Edit')).toBeNull();
-    expect(queryByText('Delete')).toBeNull();
+    expect(queryByLabelText('Edit item')).toBeNull();
+    expect(queryByLabelText('Delete item')).toBeNull();
   });
 
   it('should call onToggle when checkbox is pressed', async () => {
@@ -79,11 +79,11 @@ describe('ItemRow', () => {
   });
 
   it('should call onEdit when edit button is pressed', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ItemRow {...defaultProps} role="owner" />,
     );
 
-    fireEvent.press(getByText('Edit'));
+    fireEvent.press(getByLabelText('Edit item'));
 
     expect(defaultProps.onEdit).toHaveBeenCalledWith(mockItem);
   });
