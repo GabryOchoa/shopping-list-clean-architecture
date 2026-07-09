@@ -14,6 +14,8 @@ import { useListRole } from '../hooks/useListRole';
 import ItemRow from '../components/ItemRow';
 import ItemModal from '../components/ItemModal';
 import ErrorBanner from '../components/ErrorBanner';
+import EmptyState from '../components/EmptyState';
+import Icon from '../components/Icon';
 import { Item } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListDetail'>;
@@ -65,41 +67,38 @@ export default function ListDetailScreen({ route, navigation }: Props) {
     }
   }
 
-  //Progress summary
   const checkedCount = items.filter((i) => i.is_checked).length;
   const totalCount = items.length;
 
   if (loading && items.length === 0) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
-        <ActivityIndicator size="large" color="#4F46E5" />
+      <View className="flex-1 items-center justify-center bg-paper">
+        <ActivityIndicator size="large" color="#4F7942" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-paper">
       {/* Header */}
-      <View className="bg-white px-6 pt-14 pb-4 border-b border-gray-100">
+      <View className="bg-surface px-6 pt-14 pb-4 border-b border-line">
         <View className="flex-row items-center mb-2">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="mr-4 bg-gray-100 rounded-xl px-3 py-2"
+            className="mr-4 w-10 h-10 rounded-full bg-line items-center justify-center"
+            accessibilityLabel="Go back"
           >
-            <Text className="text-gray-600 text-sm">← Back</Text>
+            <Icon name="arrow-left" size={18} color="#767C6C" />
           </TouchableOpacity>
 
           <View className="flex-1">
-            <Text
-              className="text-2xl font-bold text-gray-800"
-              numberOfLines={1}
-            >
+            <Text className="text-2xl font-bold text-ink" numberOfLines={1}>
               {listName}
             </Text>
             {!roleLoading && role && role !== 'owner' && (
               <View className="flex-row items-center mt-1">
-                <View className="bg-indigo-100 rounded-full px-2 py-0.5">
-                  <Text className="text-xs text-indigo-600 capitalize">
+                <View className="bg-brand-clay/15 rounded-full px-2 py-0.5">
+                  <Text className="text-xs text-brand-clay capitalize">
                     {role}
                   </Text>
                 </View>
@@ -107,15 +106,15 @@ export default function ListDetailScreen({ route, navigation }: Props) {
             )}
           </View>
 
-          {/* Share button — owner only */}
           {isOwner && (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('ShareList', { listId, listName, ownerId })
               }
-              className="bg-gray-100 rounded-xl px-3 py-2"
+              className="w-10 h-10 rounded-full bg-line items-center justify-center"
+              accessibilityLabel="Share list"
             >
-              <Text className="text-gray-600 text-sm">Share</Text>
+              <Icon name="share-2" size={18} color="#4F7942" />
             </TouchableOpacity>
           )}
         </View>
@@ -124,16 +123,16 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         {totalCount > 0 && (
           <View className="mt-2">
             <View className="flex-row justify-between mb-1">
-              <Text className="text-xs text-gray-400">
+              <Text className="text-xs text-ink-soft">
                 {checkedCount} of {totalCount} done
               </Text>
-              <Text className="text-xs text-indigo-600 font-medium">
+              <Text className="text-xs text-brand-green-deep font-medium">
                 {Math.round((checkedCount / totalCount) * 100)}%
               </Text>
             </View>
-            <View className="h-1.5 bg-gray-100 rounded-full">
+            <View className="h-1.5 bg-line rounded-full">
               <View
-                className="h-1.5 bg-indigo-600 rounded-full"
+                className="h-1.5 bg-brand-green rounded-full"
                 style={{
                   width: `${(checkedCount / totalCount) * 100}%`,
                 }}
@@ -143,10 +142,8 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         )}
       </View>
 
-      {/* Error banner */}
       {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
-      {/* Items list */}
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
@@ -169,31 +166,32 @@ export default function ListDetailScreen({ route, navigation }: Props) {
         maxToRenderPerBatch={15}
         removeClippedSubviews
         ListEmptyComponent={
-          <View className="items-center justify-center py-20">
-            <Text className="text-gray-400 text-base">No items yet</Text>
-            {canMutateItems && (
-              <Text className="text-gray-400 text-sm mt-1">
-                Tap + to add your first item
-              </Text>
-            )}
-          </View>
+          <EmptyState
+            icon="check-circle"
+            title="No items yet"
+            message={
+              canMutateItems
+                ? 'Tap + to add your first item'
+                : 'No items in this list'
+            }
+          />
         }
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refresh} />
         }
       />
 
-      {/* FAB — owner or editor only */}
       {canMutateItems && (
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
           disabled={submitting}
-          className="absolute bottom-8 right-6 bg-indigo-600 w-14 h-14 rounded-full items-center justify-center shadow-lg"
+          className="absolute bottom-8 right-6 bg-brand-green w-14 h-14 rounded-full items-center justify-center shadow-lg"
+          accessibilityLabel="Add new item"
         >
           {submitting ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#2E3527" />
           ) : (
-            <Text className="text-white text-3xl leading-none">+</Text>
+            <Icon name="plus" size={24} color="#2E3527" />
           )}
         </TouchableOpacity>
       )}

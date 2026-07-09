@@ -16,6 +16,9 @@ jest.mock('expo-linking', () => ({
   addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
 }));
 
+// Mock react-native-css-interop to avoid JSX parse issues in tests
+jest.mock('react-native-css-interop', () => ({}));
+
 // Mock React Navigation
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
@@ -28,6 +31,13 @@ jest.mock('@react-navigation/native', () => ({
     params: {},
   }),
   useFocusEffect: jest.fn(),
+}));
+
+jest.mock('@react-navigation/bottom-tabs', () => ({
+  createBottomTabNavigator: () => ({
+    Navigator: ({ children }) => children,
+    Screen: ({ children }) => children,
+  }),
 }));
 
 // Mock Alert

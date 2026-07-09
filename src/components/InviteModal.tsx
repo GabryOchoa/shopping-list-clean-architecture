@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { mapError } from '../utils/mapError';
+import Icon from './Icon';
 
 type Props = {
   visible: boolean;
@@ -38,7 +39,6 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
       return;
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmed)) {
       setError('Please enter a valid email address');
@@ -68,31 +68,35 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
-        <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
-          <Text className="text-xl font-bold text-gray-800 mb-2">
+        <View className="bg-surface rounded-t-3xl px-6 pt-3 pb-10">
+          {/* Handle bar */}
+          <View className="w-10 h-1 bg-line rounded-full self-center mb-4" />
+
+          <Text className="text-xl font-bold text-ink mb-2">
             Invite someone
           </Text>
-          <Text className="text-sm text-gray-400 mb-6">
+          <Text className="text-sm text-ink-soft mb-6">
             They need an account in the app to be invited.
           </Text>
 
           {/* Email input */}
-          <Text className="text-sm font-medium text-gray-600 mb-1">
+          <Text className="text-sm font-medium text-ink-soft mb-1">
             Email address
           </Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
             placeholder="friend@example.com"
+            placeholderTextColor="#767C6C"
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-800 mb-4"
+            className="border border-line rounded-xl px-4 py-3 text-base text-ink mb-4"
             autoFocus
           />
 
           {/* Role selector */}
-          <Text className="text-sm font-medium text-gray-600 mb-2">Role</Text>
+          <Text className="text-sm font-medium text-ink-soft mb-2">Role</Text>
           <View className="flex-row gap-3 mb-6">
             {(['viewer', 'editor'] as const).map((r) => (
               <TouchableOpacity
@@ -100,20 +104,27 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
                 onPress={() => setRole(r)}
                 className={`flex-1 rounded-xl py-3 items-center border ${
                   role === r
-                    ? 'bg-indigo-600 border-indigo-600'
-                    : 'bg-white border-gray-200'
+                    ? 'bg-brand-green border-brand-green'
+                    : 'bg-surface border-line'
                 }`}
               >
-                <Text
-                  className={`text-sm font-semibold capitalize ${
-                    role === r ? 'text-white' : 'text-gray-600'
-                  }`}
-                >
-                  {r}
-                </Text>
+                <View className="flex-row items-center">
+                  <Icon
+                    name={r === 'viewer' ? 'eye' : 'edit-3'}
+                    size={14}
+                    color={role === r ? '#2E3527' : '#767C6C'}
+                  />
+                  <Text
+                    className={`text-sm font-semibold capitalize ml-1.5 ${
+                      role === r ? 'text-ink' : 'text-ink-soft'
+                    }`}
+                  >
+                    {r}
+                  </Text>
+                </View>
                 <Text
                   className={`text-xs mt-0.5 ${
-                    role === r ? 'text-indigo-200' : 'text-gray-400'
+                    role === r ? 'text-ink/60' : 'text-ink-soft'
                   }`}
                 >
                   {r === 'viewer' ? 'Can view only' : 'Can edit items'}
@@ -122,25 +133,30 @@ export default function InviteModal({ visible, onClose, onInvite }: Props) {
             ))}
           </View>
 
-          {error && <Text className="text-red-500 text-sm mb-4">{error}</Text>}
+          {error && <Text className="text-danger text-sm mb-4">{error}</Text>}
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={handleClose}
-              className="flex-1 border border-gray-200 rounded-xl py-4 items-center"
+              className="flex-1 border border-line rounded-xl py-4 items-center"
             >
-              <Text className="text-gray-600 font-medium">Cancel</Text>
+              <Text className="text-ink-soft font-medium">Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleInvite}
               disabled={loading}
-              className="flex-1 bg-indigo-600 rounded-xl py-4 items-center"
+              className="flex-1 bg-brand-green rounded-xl py-4 items-center flex-row justify-center"
             >
               {loading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color="#2E3527" />
               ) : (
-                <Text className="text-white font-semibold">Send invite</Text>
+                <>
+                  <Icon name="user-plus" size={16} color="#2E3527" />
+                  <Text className="text-ink font-semibold ml-2">
+                    Send invite
+                  </Text>
+                </>
               )}
             </TouchableOpacity>
           </View>

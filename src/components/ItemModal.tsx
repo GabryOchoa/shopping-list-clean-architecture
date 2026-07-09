@@ -65,8 +65,6 @@ export default function ItemModal({
     }
   }
 
-  // Quantity stepper helpers
-
   function increment() {
     setQuantity((prev) => String(Math.min(parseInt(prev || '0') + 1, 99)));
   }
@@ -88,67 +86,71 @@ export default function ItemModal({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end bg-black/40"
       >
-        <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
-          <Text className="text-xl font-bold text-gray-800 mb-6">
+        <View className="bg-surface rounded-t-3xl px-6 pt-3 pb-10">
+          {/* Handle bar */}
+          <View className="w-10 h-1 bg-line rounded-full self-center mb-4" />
+
+          <Text className="text-xl font-bold text-ink mb-6">
             {isEditing ? 'Edit item' : 'Add item'}
           </Text>
 
           {/* Name */}
-          <Text className="text-sm font-medium text-gray-600 mb-1">Name *</Text>
+          <Text className="text-sm font-medium text-ink-soft mb-1">Name *</Text>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="e.g. Olive oil"
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-800 mb-4"
+            placeholderTextColor="#767C6C"
+            className="border border-line rounded-xl px-4 py-3 text-base text-ink mb-4"
             autoFocus
           />
 
           {/* Quantity stepper */}
-          <Text className="text-sm font-medium text-gray-600 mb-1">
+          <Text className="text-sm font-medium text-ink-soft mb-1">
             Quantity
           </Text>
           <View className="flex-row items-center mb-4">
             <TouchableOpacity
               onPress={decrement}
-              className="w-10 h-10 bg-gray-100 rounded-xl items-center justify-center"
+              className="w-10 h-10 bg-line rounded-xl items-center justify-center"
             >
-              <Text className="text-xl text-gray-600">−</Text>
+              <Text className="text-xl text-ink-soft">−</Text>
             </TouchableOpacity>
 
             <TextInput
               value={quantity}
               onChangeText={setQuantity}
               keyboardType="number-pad"
-              className="w-16 text-center text-base text-gray-800 border border-gray-200 rounded-xl mx-2 py-2"
+              className="w-16 text-center text-base text-ink border border-line rounded-xl mx-2 py-2"
             />
 
             <TouchableOpacity
               onPress={increment}
-              className="w-10 h-10 bg-gray-100 rounded-xl items-center justify-center"
+              className="w-10 h-10 bg-line rounded-xl items-center justify-center"
             >
-              <Text className="text-xl text-gray-600">+</Text>
+              <Text className="text-xl text-ink-soft">+</Text>
             </TouchableOpacity>
           </View>
 
-          {error && <Text className="text-red-500 text-sm mb-4">{error}</Text>}
+          {error && <Text className="text-danger text-sm mb-4">{error}</Text>}
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={onClose}
-              className="flex-1 border border-gray-200 rounded-xl py-4 items-center"
+              className="flex-1 border border-line rounded-xl py-4 items-center"
             >
-              <Text className="text-gray-600 font-medium">Cancel</Text>
+              <Text className="text-ink-soft font-medium">Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-indigo-600 rounded-xl py-4 items-center"
+              className="flex-1 bg-brand-green rounded-xl py-4 items-center"
             >
               {loading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color="#2E3527" />
               ) : (
-                <Text className="text-white font-semibold">
+                <Text className="text-ink font-semibold">
                   {isEditing ? 'Save changes' : 'Add item'}
                 </Text>
               )}

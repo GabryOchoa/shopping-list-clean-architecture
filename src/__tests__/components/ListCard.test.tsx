@@ -49,21 +49,21 @@ describe('ListCard', () => {
   });
 
   it('should show edit and delete buttons for owner', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ListCard {...defaultProps} role="owner" />,
     );
 
-    expect(getByText('Edit')).toBeTruthy();
-    expect(getByText('Delete')).toBeTruthy();
+    expect(getByLabelText('Edit list')).toBeTruthy();
+    expect(getByLabelText('Delete list')).toBeTruthy();
   });
 
   it('should not show edit and delete buttons for non-owner', async () => {
-    const { queryByText } = await render(
+    const { queryByLabelText } = await render(
       <ListCard {...defaultProps} role="editor" />,
     );
 
-    expect(queryByText('Edit')).toBeNull();
-    expect(queryByText('Delete')).toBeNull();
+    expect(queryByLabelText('Edit list')).toBeNull();
+    expect(queryByLabelText('Delete list')).toBeNull();
   });
 
   it('should call onPress when card is pressed', async () => {
@@ -77,21 +77,21 @@ describe('ListCard', () => {
   });
 
   it('should call onEdit when edit button is pressed', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ListCard {...defaultProps} role="owner" />,
     );
 
-    fireEvent.press(getByText('Edit'));
+    fireEvent.press(getByLabelText('Edit list'));
 
     expect(defaultProps.onEdit).toHaveBeenCalledWith(mockList);
   });
 
   it('should have a delete button', async () => {
-    const { getByText } = await render(
+    const { getByLabelText } = await render(
       <ListCard {...defaultProps} role="owner" />,
     );
 
-    const deleteButton = getByText('Delete');
+    const deleteButton = getByLabelText('Delete list');
     expect(deleteButton).toBeTruthy();
   });
 
