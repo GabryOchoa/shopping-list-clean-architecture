@@ -14,6 +14,8 @@ import { useAuth } from '../context/AuthContext';
 import MemberRow from '../components/MemberRow';
 import InviteModal from '../components/InviteModal';
 import ErrorBanner from '../components/ErrorBanner';
+import EmptyState from '../components/EmptyState';
+import Icon from '../components/Icon';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ShareList'>;
 
@@ -36,38 +38,42 @@ export default function ShareListScreen({ route, navigation }: Props) {
   const isOwner = user?.id === ownerId;
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-paper">
       {/* Header */}
-      <View className="bg-white px-6 pt-14 pb-4 border-b border-gray-100">
+      <View className="bg-surface px-6 pt-14 pb-4 border-b border-line">
         <View className="flex-row items-center mb-1">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="mr-4 bg-gray-100 rounded-xl px-3 py-2"
+            className="mr-4 w-10 h-10 rounded-full bg-line items-center justify-center"
+            accessibilityLabel="Go back"
           >
-            <Text className="text-gray-600 text-sm">← Back</Text>
+            <Icon name="arrow-left" size={18} color="#767C6C" />
           </TouchableOpacity>
           <View className="flex-1">
-            <Text className="text-2xl font-bold text-gray-800">Sharing</Text>
-            <Text className="text-sm text-gray-400 mt-0.5" numberOfLines={1}>
+            <Text className="text-2xl font-bold text-ink">Sharing</Text>
+            <Text className="text-sm text-ink-soft mt-0.5" numberOfLines={1}>
               {listName}
             </Text>
           </View>
 
-          {/* Only owners can invite */}
           {isOwner && (
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
-              className="bg-indigo-600 rounded-xl px-4 py-2"
+              className="bg-brand-green rounded-xl px-4 py-2 flex-row items-center"
+              accessibilityLabel="Invite member"
             >
-              <Text className="text-white text-sm font-semibold">+ Invite</Text>
+              <Icon name="user-plus" size={14} color="#2E3527" />
+              <Text className="text-ink text-sm font-semibold ml-1.5">
+                Invite
+              </Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
 
       {/* Role legend */}
-      <View className="px-6 py-3 bg-indigo-50 border-b border-indigo-100">
-        <Text className="text-xs text-indigo-600">
+      <View className="px-6 py-3 bg-brand-green/10 border-b border-brand-green/20">
+        <Text className="text-xs text-brand-green-deep">
           <Text className="font-semibold">Viewer</Text> — can see items only
           {'   '}
           <Text className="font-semibold">Editor</Text> — can add, edit and
@@ -75,13 +81,11 @@ export default function ShareListScreen({ route, navigation }: Props) {
         </Text>
       </View>
 
-      {/* Error banner */}
       {error && <ErrorBanner message={error} onDismiss={clearError} />}
 
-      {/* Members list */}
       {loading && members.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#4F46E5" />
+          <ActivityIndicator size="large" color="#4F7942" />
         </View>
       ) : (
         <FlatList
@@ -89,7 +93,7 @@ export default function ShareListScreen({ route, navigation }: Props) {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 16 }}
           ListHeaderComponent={
-            <Text className="text-xs text-gray-400 uppercase tracking-wide mb-3 px-1">
+            <Text className="text-xs text-ink-soft uppercase tracking-wide mb-3 px-1">
               {members.length} {members.length === 1 ? 'member' : 'members'}
             </Text>
           }
@@ -110,14 +114,15 @@ export default function ShareListScreen({ route, navigation }: Props) {
           maxToRenderPerBatch={10}
           removeClippedSubviews
           ListEmptyComponent={
-            <View className="items-center justify-center py-16">
-              <Text className="text-gray-400 text-base">No members yet</Text>
-              {isOwner && (
-                <Text className="text-gray-400 text-sm mt-1">
-                  Tap + Invite to share this list
-                </Text>
-              )}
-            </View>
+            <EmptyState
+              icon="users"
+              title="No members yet"
+              message={
+                isOwner
+                  ? 'Tap Invite to share this list'
+                  : 'No members have been added yet'
+              }
+            />
           }
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={refresh} />
