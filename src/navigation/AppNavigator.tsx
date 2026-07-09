@@ -28,11 +28,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   const { user, loading } = useAuth();
 
-  // Show spinner while session is being restored from AsyncStorage
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#4F46E5" />
+      <View className="flex-1 items-center justify-center bg-paper">
+        <ActivityIndicator size="large" color="#4F7942" />
       </View>
     );
   }
